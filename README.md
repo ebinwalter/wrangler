@@ -12,6 +12,7 @@ to use it:
 use wrangler::{self, ShaderKind};
 
 let ins = wrangler::Instructions {
+    // paths are relative to the crate root
     record_path: "assets/shaders/shader_record.dat",
     output_root: "assets/shaders/compiled",
     search_root: "assets/shaders/source",
@@ -22,4 +23,4 @@ wrangler::run(ins).unwrap();
 ```
 
 # License
-Licensed under the BSD 3-Clause.
+Licensed under the BSD 3-Clause license.
