@@ -195,6 +195,18 @@ fn compile(to_compile: &Vec<CompilationCandidate>) -> Vec<Result<CompileOutput>>
     out
 }
 
+fn setup_files(instructions: &Instructions) -> Result<()> {
+    let out_path: PathBuf = instructions.output_root.into();
+    if !out_path.exists() {
+        fs::create_dir_all(out_path).map_err(Error::Io)?;
+    }
+    let search_path: PathBuf = instructions.search_root.into();
+    if !search_path.exists() {
+        fs::create_dir_all(search_path).map_err(Error::Io)?;
+    }
+    Ok(())
+}
+
 fn write_output(instructions: &Instructions, out: &CompileOutput) -> Result<()> {
     let extension = format!("spv_{}", kind_ext(&out.shader_kind)?);
     let tail = out.location.strip_prefix(instructions.search_root).unwrap();
@@ -209,6 +221,7 @@ fn write_output(instructions: &Instructions, out: &CompileOutput) -> Result<()> 
 }
 
 pub fn run(instructions: Instructions) -> Result<()> {
+    setup_files(&instructions)?;
     let compile_candidates = find_shaders(&instructions)?;
     let mut record = Record::try_load(&instructions)?;
     let to_compile = check_against_record(&compile_candidates, &record)?;
